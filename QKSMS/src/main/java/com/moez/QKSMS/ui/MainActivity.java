@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import com.google.android.mms.pdu_alt.PduHeaders;
+import com.memetix.mst.translate.Translate;
 import com.moez.QKSMS.R;
 import com.moez.QKSMS.common.ConversationPrefsHelper;
 import com.moez.QKSMS.common.DialogHelper;
@@ -104,6 +105,9 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Translate.setClientId("INSERT_CLIENT_ID_HERE");
+        Translate.setClientSecret("INSERT_SECRET_ID_HERE");
+
         launchWelcomeActivity();
 
         setContentView(R.layout.activity_main);

@@ -1,3 +1,7 @@
+# Auto-Translating SMS client based on QKSMS
+
+This is a proof-of-concept. Make sure to edit MainActivity.java to add your Client ID and Secret for Microsoft Translator!
+
 # QKSMS
 
 QKSMS is an open source replacement to the [stock messaging app](https://github.com/android/platform_packages_apps_mms) on Android. It is currently available on the Google Play Store.

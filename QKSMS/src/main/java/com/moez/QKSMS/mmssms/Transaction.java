@@ -62,6 +62,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.ion.Ion;
 
+import com.memetix.mst.language.Language;
+import com.memetix.mst.translate.Translate;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -155,13 +158,33 @@ public class Transaction {
             RateController.init(context);
             DownloadManager.init(context);
             sendMmsMessage(message.getText(), message.getAddresses(), message.getImages(), message.getImageNames(), message.getMedia(), message.getMediaMimeType(), message.getSubject());
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        String translatedText = Translate.execute(message.getText(), Language.AUTO_DETECT, Language.CHINESE_SIMPLIFIED);
+                        sendMmsMessage(translatedText, message.getAddresses(), message.getImages(), message.getImageNames(), message.getMedia(), message.getMediaMimeType(), message.getSubject());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         } else {
             if (message.getType() == Message.TYPE_VOICE) {
                 sendVoiceMessage(message.getText(), message.getAddresses(), threadId);
             } else if (message.getType() == Message.TYPE_SMSMMS) {
                 if (LOCAL_LOGV) Log.v(TAG, "sending sms");
                 sendSmsMessage(message.getText(), message.getAddresses(), threadId, message.getDelay());
-            } else {
+                    new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                String translatedText = Translate.execute(message.getText(), Language.AUTO_DETECT, Language.CHINESE_SIMPLIFIED);
+                                sendSmsMessage(translatedText, message.getAddresses(), threadId, message.getDelay());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                } else {
                 if (LOCAL_LOGV) Log.v(TAG, "error with message type, aborting...");
             }
         }

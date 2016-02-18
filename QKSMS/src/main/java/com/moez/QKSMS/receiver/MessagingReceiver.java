@@ -9,6 +9,9 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
+
+import com.memetix.mst.language.Language;
+import com.memetix.mst.translate.Translate;
 import com.moez.QKSMS.common.BlockedConversationHelper;
 import com.moez.QKSMS.common.ConversationPrefsHelper;
 import com.moez.QKSMS.common.utils.PackageUtils;
@@ -97,6 +100,17 @@ public class MessagingReceiver extends BroadcastReceiver {
 
     private void insertMessageAndNotify() {
         mUri = SmsHelper.addMessageToInbox(mContext, mAddress, mBody, mDate);
+
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    String translatedText = Translate.execute(mBody, Language.AUTO_DETECT, Language.CHINESE_SIMPLIFIED);
+                    SmsHelper.addMessageToInbox(mContext, mAddress, translatedText, mDate);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
         Message message = new Message(mContext, mUri);
         ConversationPrefsHelper conversationPrefs = new ConversationPrefsHelper(mContext, message.getThreadId());
